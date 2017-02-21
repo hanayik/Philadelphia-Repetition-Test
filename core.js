@@ -5,6 +5,7 @@ const csvsync = require('csvsync')
 const fs = require('fs')
 const $ = require('jQuery')
 const {app} = require('electron').remote;
+app.setName('PRT')
 const appRootDir = require('app-root-dir').get() //get the path of the application bundle
 const ffmpeg = appRootDir+'/ffmpeg/ffmpeg'
 const exec = require( 'child_process' ).exec
@@ -12,28 +13,32 @@ const si = require('systeminformation');
 var userDataPath = app.getPath('videos');
 var moment = require('moment')
 var content = document.getElementById("contentDiv")
-var picNum = document.getElementById("picNumID")
+var audioNum = document.getElementById("audioNumID")
 var localMediaStream
 var sys = {
   modelID: 'unknown',
   isMacBook: false // need to detect if macbook for ffmpeg recording framerate value
 }
-var instructions = "I'm going to ask you to name some pictures. When you hear a beep, a picture will appear on the computer screen. Your job is to name the picture using only one word. We'll practice several pictures before we begin"
+var instructions = "You are going to hear some real English words. Listen to the words and repeat exactly what you hear."
 var beepSound = path.join(__dirname, 'assets', 'beep.wav')
-var exp = new experiment('pnt')
+var exp = new experiment('prt')
 // construct a new ffmpeg recording object
 var rec = new ff()
 var timeoutTime = 30 // in seconds
 exp.getRootPath()
 exp.getMediaPath()
 var stimfile = path.resolve(exp.mediapath, 'stim.csv')
-//console.log(stimfile)
+console.log(stimfile)
 var trials = readCSV(stimfile)
 var maxTrials = trials.length
 var trialTimeoutID
-var t = Number(picNum.value)-1
+var t = Number(audioNum.value)-1
 var tReal = t-1
 lowLag.init(); // init audio functions
+
+
+
+
 
 
 
@@ -149,7 +154,7 @@ function ff() {
     return outpath
   }
   this.outputFilename = function() {
-    return path.join(this.makeOutputFolder(), this.getSubjID()+'_'+this.getSessID()+'_'+getDateStamp()+this.videoExt)
+    return path.join(this.makeOutputFolder(), this.getSubjID()+'_'+this.getSessID()+'_'+app.getName()+'_'+getDateStamp()+this.videoExt)
   },
   this.getFramerate = function () {
     if (sys.isMacBook == true){
@@ -476,10 +481,10 @@ function getStarted() {
     console.log ('subject is: ', subjID)
     console.log('session is: ', sessID)
     stopWebCamPreview()
-    t = Number(picNum.value)-1
+    t = Number(audioNum.value)-1
     tReal = t-1
-    if (Number(picNum.value) > maxTrials+1) {
-      alert("Invalid picture number " + picNum.value )
+    if (Number(audioNum.value) > maxTrials+1) {
+      alert("Invalid audio file number " + audioNum.value )
     } else {
       closeNav()
       showInstructions(instructions)
@@ -496,15 +501,16 @@ function showNextTrial() {
   clearScreen()
   t = t += 1
   tReal = t-1
-  picNum.value = t
+  audioNum.value = t
   if (tReal >= maxTrials) {
     clearScreen()
     rec.stopRec()
+    openNav()
     return false
   }
   var img = document.createElement("img")
-  img.src = path.join(exp.mediapath, 'pics', trials[tReal].PictureName.trim() + '.png')
-  playAudio(path.join(exp.mediapath, 'beep.wav'))
+  img.src = path.join(exp.mediapath, 'sound512px' + '.png')
+  playAudio(path.join(exp.mediapath, 'audio', trials[tReal].AudioName.trim() + '.wav'))
   content.appendChild(img)
   trialTimeoutID = setTimeout(showNextTrial, 1000 * timeoutTime)
   return getTime()
@@ -517,14 +523,14 @@ function showPreviousTrial() {
   clearScreen()
   t -= 1
   tReal = t-1
-  picNum.value = t
+  audioNum.value = t
   if (tReal < 0) {
     t=1
     tReal = t-1
   }
   var img = document.createElement("img")
-  img.src = path.join(exp.mediapath, 'pics', trials[tReal].PictureName.trim() + '.png')
-  playAudio(path.join(exp.mediapath, 'beep.wav'))
+  img.src = path.join(exp.mediapath, 'sound512px' + '.png')
+  playAudio(path.join(exp.mediapath, 'audio', trials[tReal].AudioName.trim() + '.wav'))
   content.appendChild(img)
   trialTimeoutID = setTimeout(showNextTrial, 1000 * timeoutTime)
   return getTime()
