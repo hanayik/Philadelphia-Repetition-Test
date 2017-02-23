@@ -45,30 +45,31 @@ function createWindow () {
     system.display.getBrightness().then(function(brightness) {
       //console.log(brightness)
       if (brightness < 1) {
-        dialog.showMessageBox({ type: 'info', buttons: ['Adjust brightness for me', 'Cancel'], message: "Your screen seems a bit dim, would you like to set it to it's maximum setting? It's best to have it as bright as possible." }, function (buttonIndex) {
-          if (buttonIndex == 0) {
-            maxBrightness = 1
-            system.display.setBrightness(maxBrightness).then(function() {});
-          }
-        });
-        // USE NOTIFICATIONS WHEN MY PR IS MERGED!
-        //
-        // const notification = notifier.notify(app.getName(), {
-        //   message: "Your screen is dim.",
-        //   buttons: ['Illuminate', 'Cancel']
-        // })
-        // notification.on('buttonClicked', (text) => {
-        //   console.log(text)
-        //   if (text === 'Illuminate') {
-        //     console.log('Illuminate clicked!')
+        // dialog.showMessageBox({ type: 'info', buttons: ['Adjust brightness for me', 'Cancel'], message: "Your screen seems a bit dim, would you like to set it to it's maximum setting? It's best to have it as bright as possible." }, function (buttonIndex) {
+        //   if (buttonIndex == 0) {
         //     maxBrightness = 1
         //     system.display.setBrightness(maxBrightness).then(function() {});
         //   }
-        //   notification.close()
-        // })
-        // notification.on('clicked', () => {
-        //   notification.close()
-        // })
+        // });
+        // USE NOTIFICATIONS WHEN MY PR IS MERGED!
+        //
+        const notification = notifier.notify(app.getName(), {
+          message: "Your screen is dim.",
+          buttons: ['Illuminate', 'Cancel'],
+          duration: 20000
+        })
+        notification.on('buttonClicked', (text) => {
+          console.log(text)
+          if (text === 'Illuminate') {
+            console.log('Illuminate clicked!')
+            maxBrightness = 1
+            system.display.setBrightness(maxBrightness).then(function() {});
+          }
+          notification.close()
+        })
+        notification.on('clicked', () => {
+          notification.close()
+        })
       }
     });
   }
@@ -79,12 +80,29 @@ function createWindow () {
     system.audio.getSystemVolume().then(function(volumeLevel) {
       //console.log(volumeLevel)
       if (volumeLevel < 75) {
-        dialog.showMessageBox({ type: 'info', buttons: ['Adjust volume for me', 'Cancel'], message: "Your volume is set a little low, would you like to set it a little louder?" }, function (buttonIndex) {
-          if (buttonIndex == 0) {
+        // dialog.showMessageBox({ type: 'info', buttons: ['Adjust volume for me', 'Cancel'], message: "Your volume is set a little low, would you like to set it a little louder?" }, function (buttonIndex) {
+        //   if (buttonIndex == 0) {
+        //     newVolumeLevel = 75
+        //     system.audio.setSystemVolume(newVolumeLevel).then(function() {});
+        //   }
+        // });
+        const notification = notifier.notify(app.getName(), {
+          message: "Your volume is a little low.",
+          buttons: ['Make louder!', 'Cancel'],
+          duration: 20000
+        })
+        notification.on('buttonClicked', (text) => {
+          console.log(text)
+          if (text === 'Make louder!') {
+            console.log('Make louder clicked!')
             newVolumeLevel = 75
             system.audio.setSystemVolume(newVolumeLevel).then(function() {});
           }
-        });
+          notification.close()
+        })
+        notification.on('clicked', () => {
+          notification.close()
+        })
       }
       });
   }
