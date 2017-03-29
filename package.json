@@ -1,12 +1,14 @@
 {
   "name": "PRT",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron app.js",
-    "build-mac": "electron-packager . --out=dist --platform=darwin --icon ./icon.icns --overwrite --tmpdir=false"
+    "build-mac": "electron-packager . --out=dist --platform=darwin --icon ./icon.icns --overwrite --tmpdir=false",
+    "osx-sign": "codesign --deep --force --verbose --sign 'PLJK232T8G' ./dist/PRT-darwin-x64/PRT.app",
+    "startAppWithLogging": "./dist/PRT-darwin-x64/PRT.app/Contents/MacOS/PRT"
   },
   "repository": {
     "type": "git",

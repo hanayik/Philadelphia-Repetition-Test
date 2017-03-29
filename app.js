@@ -12,6 +12,10 @@ const ffmpeg = appRootDir+'/ffmpeg/ffmpeg'
 const exec = require( 'child_process' ).exec
 const system = require('system-control')();
 const notifier = require('electron-notifications')
+const os = require("os");
+const autoUpdater = electron.autoUpdater
+var platform = os.platform() + '_' + os.arch();
+var version = app.getVersion();
 app.setName('PRT')
 //icon credit: http://www.flaticon.com/authors/madebyoliver
 
@@ -32,6 +36,9 @@ function createWindow () {
 
   // Open the DevTools.
   //mainWindow.webContents.openDevTools()
+  console.log('https://philadelphia-repetition-test.herokuapp.com/'+'update/'+platform+'/'+version)
+  autoUpdater.setFeedURL('https://philadelphia-repetition-test.herokuapp.com/'+'update/'+platform+'/'+version);
+  autoUpdater.checkForUpdates()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -53,10 +60,11 @@ function createWindow () {
         // });
         // USE NOTIFICATIONS WHEN MY PR IS MERGED!
         //
-        const notification = notifier.notify(app.getName(), {
+        const notification = notifier.notify('', {
           message: "Your screen is dim.",
           buttons: ['Illuminate', 'Cancel'],
-          duration: 20000
+          duration: 20000,
+          icon: path.join(__dirname, 'icon.png')
         })
         notification.on('buttonClicked', (text) => {
           console.log(text)
@@ -86,10 +94,11 @@ function createWindow () {
         //     system.audio.setSystemVolume(newVolumeLevel).then(function() {});
         //   }
         // });
-        const notification = notifier.notify(app.getName(), {
+        const notification = notifier.notify('', {
           message: "Your volume is a little low.",
           buttons: ['Make louder!', 'Cancel'],
-          duration: 20000
+          duration: 20000,
+          icon: path.join(__dirname, 'icon.png')
         })
         notification.on('buttonClicked', (text) => {
           console.log(text)
@@ -133,6 +142,39 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createWindow()
   }
+})
+
+
+autoUpdater.on('error', function(err) {
+  console.log(err)
+})
+autoUpdater.on('checking-for-update', function(){
+  console.log('checking for update')
+})
+autoUpdater.on('update-available', function(){
+  console.log('update available, downloading now')
+})
+autoUpdater.on('update-not-available', function(){
+  console.log('update not available')
+})
+autoUpdater.on('update-downloaded', function(){
+  console.log('update downloaded')
+  const updateNotification = notifier.notify('', {
+    message: "Update downloaded!",
+    buttons: ['Install', 'Cancel'],
+    duration: 20000,
+    icon: path.join(__dirname, 'icon.png')
+  })
+  updateNotification.on('buttonClicked', (text) => {
+    console.log(text)
+    if (text === 'Install') {
+      autoUpdater.quitAndInstall()
+    }
+    updateNotification.close()
+  })
+  updateNotification.on('clicked', () => {
+    updateNotification.close()
+  })
 })
 
 // In this file you can include the rest of your app's specific main process

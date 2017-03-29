@@ -43,7 +43,7 @@ const template = [
     ]
   },
   {
-    label: 'Camera',
+    label: 'Utilities',
     submenu: [
       {
         label: 'Start Webcam Preview',

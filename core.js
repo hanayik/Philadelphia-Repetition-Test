@@ -251,7 +251,9 @@ function clearScreen() {
   content.removeChild(content.lastChild)
 }
 
-
+function clearAllTimeouts() {
+  clearTimeout(trialTimeoutID)
+}
 
 // show text instructions on screen
 function showInstructions(txt) {
@@ -412,6 +414,7 @@ function updateKeys() {
   if (keys.key === 'ArrowLeft') {
     showPreviousTrial()
   }
+  return keys.time
 }
 
 
@@ -500,12 +503,13 @@ function showNextTrial() {
   clearTimeout(trialTimeoutID)
   closeNav()
   clearScreen()
-  t = t += 1
+  t += 1
   tReal = t-1
   audioNum.value = t
   if (tReal >= maxTrials) {
     clearScreen()
     rec.stopRec()
+    clearAllTimeouts()
     openNav()
     return false
   }
