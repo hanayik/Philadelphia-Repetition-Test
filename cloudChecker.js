@@ -11,6 +11,7 @@ function checkCloudSettings() {
   } else if (typeof(useCloud) === "undefined") {
     console.log ("useCloud was undefined")
     settings.set('useCloud', true)
+    useCloud = true
     menu.items[4].submenu.items[0].checked= true
   }
 }
