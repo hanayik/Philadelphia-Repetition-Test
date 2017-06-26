@@ -16,6 +16,7 @@ const os = require("os");
 const autoUpdater = electron.autoUpdater
 var platform = os.platform() + '_' + os.arch();
 var version = app.getVersion();
+var updateResponse
 app.setName('PRT')
 //icon credit: http://www.flaticon.com/authors/madebyoliver
 
@@ -153,41 +154,28 @@ autoUpdater.on('checking-for-update', function(){
 })
 autoUpdater.on('update-available', function(){
   console.log('update available, downloading now')
-  const availableNotification = notifier.notify('', {
-    message: "Update available. Downloading in the background now",
-    buttons: ['Ok'],
-    duration: 4000,
-    icon: path.join(__dirname, 'icon.png')
-  })
-  availableNotification.on('buttonClicked', (text) => {
-    console.log(text)
-    availableNotification.close()
-  })
-  availableNotification.on('clicked', () => {
-    availableNotification.close()
+  var dialogOptions = {
+    type: "question",
+    buttons: ["Cancel", "Install"],
+    defaultId: 1,
+    title: "Install Update",
+    message: "Would you like to install the latest version now? If so, the app will download the new version and update itself. It will take a few minutes, depending on your network connection.",
+    cancelId: 0
+  }
+  dialog.showMessageBox(mainWindow, dialogOptions , function (response) {
+    updateResponse = response
+    if (response == 1) {
+
+    }
   })
 })
 autoUpdater.on('update-not-available', function(){
   console.log('update not available')
 })
 autoUpdater.on('update-downloaded', function(){
-  console.log('update downloaded')
-  const updateNotification = notifier.notify('', {
-    message: "Update downloaded!",
-    buttons: ['Install', 'Cancel'],
-    duration: 20000,
-    icon: path.join(__dirname, 'icon.png')
-  })
-  updateNotification.on('buttonClicked', (text) => {
-    console.log(text)
-    if (text === 'Install') {
-      autoUpdater.quitAndInstall()
-    }
-    updateNotification.close()
-  })
-  updateNotification.on('clicked', () => {
-    updateNotification.close()
-  })
+  if (updateResponse == 1) {
+    autoUpdater.quitAndInstall()
+  }
 })
 
 // In this file you can include the rest of your app's specific main process

@@ -10,6 +10,19 @@ body {
   min-width: 400px;
 }
 
+.startBtn {
+    width: 150px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 3% 5%;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 2px 2px 3px #ccc;
+}
+
 .nav {
   position: fixed;
   flex: initial;

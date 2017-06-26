@@ -20,7 +20,8 @@ var sys = {
   modelID: 'unknown',
   isMacBook: false // need to detect if macbook for ffmpeg recording framerate value
 }
-var instructions = "You are going to hear some real English words. Listen to the words and repeat exactly what you hear."
+var instructions = ["<h1>You are going to hear some real English words. <br>" +
+                    "Listen to the words and repeat exactly what you hear. </h1>"]
 var beepSound = path.join(__dirname, 'assets', 'beep.wav')
 var exp = new experiment('prt')
 // construct a new ffmpeg recording object
@@ -207,7 +208,7 @@ function ff() {
       ' -preset ultrafast' +
       ' -filter_complex ' + this.filter +
       ' -r ' + this.getFramerate().toString() +
-      ' ' + '"' + this.outputFilename() + '"'
+      ' -movflags +faststart ' + '"' + this.outputFilename() + '"'
     ]
     console.log('ffmpeg cmd: ')
     console.log(cmd)
@@ -285,14 +286,16 @@ function showInstructions(txt) {
   var textDiv = document.createElement("div")
   textDiv.style.textAlign = 'center'
   var p = document.createElement("p")
-  var txtNode = document.createTextNode(txt)
-  p.appendChild(txtNode)
+  // var txtNode = document.createTextNode(txt)
+  // p.appendChild(txtNode)
+  p.innerHTML = txt
   textDiv.appendChild(p)
   var lineBreak = document.createElement("br")
   var btnDiv = document.createElement("div")
   var startBtn = document.createElement("button")
   var startBtnTxt = document.createTextNode("Start")
   startBtn.appendChild(startBtnTxt)
+  startBtn.className = 'startBtn'
   startBtn.onclick = showNextTrial
   btnDiv.appendChild(startBtn)
   content.appendChild(textDiv)
@@ -536,10 +539,10 @@ function showNextTrial() {
     openNav()
     return false
   }
-  var img = document.createElement("img")
-  img.src = path.join(exp.mediapath, 'sound512px' + '.png')
+  // var img = document.createElement("img")
+  // img.src = path.join(exp.mediapath, 'sound512px' + '.png')
+  // content.appendChild(img)
   playAudio(path.join(exp.mediapath, 'audio', trials[tReal].AudioName.trim() + '.wav'))
-  content.appendChild(img)
   trialTimeoutID = setTimeout(showNextTrial, 1000 * timeoutTime)
   return getTime()
 }
@@ -556,10 +559,10 @@ function showPreviousTrial() {
     t=1
     tReal = t-1
   }
-  var img = document.createElement("img")
-  img.src = path.join(exp.mediapath, 'sound512px' + '.png')
+  // var img = document.createElement("img")
+  // img.src = path.join(exp.mediapath, 'sound512px' + '.png')
+  // content.appendChild(img)
   playAudio(path.join(exp.mediapath, 'audio', trials[tReal].AudioName.trim() + '.wav'))
-  content.appendChild(img)
   trialTimeoutID = setTimeout(showNextTrial, 1000 * timeoutTime)
   return getTime()
 }
