@@ -173,6 +173,9 @@ autoUpdater.on('update-available', function(){
   dialog.showMessageBox(mainWindow, dialogOptions , function (response) {
     updateResponse = response
     if (response == 1) {
+      console.log('showing spinner now...')
+      mainWindow.webContents.send('showSpinner', 'whoooooooh!')
+    } else {
 
     }
   })
