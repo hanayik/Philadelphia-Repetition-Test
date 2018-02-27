@@ -450,6 +450,9 @@ function updateKeys() {
   if (keys.key === 'ArrowRight') {
     showNextTrial()
   }
+  if (keys.key === 'r') {
+    repeatCurrentTrial()
+  }
   if (keys.key === 'ArrowLeft') {
     showPreviousTrial()
   }
@@ -544,6 +547,26 @@ function showNextTrial() {
   clearScreen()
   t += 1
   tReal = t-1
+  audioNum.value = t
+  if (tReal >= maxTrials) {
+    clearScreen()
+    rec.stopRec()
+    clearAllTimeouts()
+    openNav()
+    return false
+  }
+  // var img = document.createElement("img")
+  // img.src = path.join(exp.mediapath, 'sound512px' + '.png')
+  // content.appendChild(img)
+  playAudio(path.join(exp.mediapath, 'audio', trials[tReal].AudioName.trim() + '.wav'))
+  trialTimeoutID = setTimeout(showNextTrial, 1000 * timeoutTime)
+  return getTime()
+}
+
+function repeatCurrentTrial() {
+  clearTimeout(trialTimeoutID)
+  closeNav()
+  clearScreen()
   audioNum.value = t
   if (tReal >= maxTrials) {
     clearScreen()
