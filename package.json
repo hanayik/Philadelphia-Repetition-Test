@@ -31,7 +31,7 @@
   "devDependencies": {
     "app-root-dir": "^1.0.2",
     "csvsync": "^1.0.1",
-    "electron": "^1.4.15",
+    "electron": "^1.8.2",
     "electron-packager": "^8.7.2",
     "jQuery": "^1.7.4",
     "moment": "^2.17.1",
